@@ -12,9 +12,10 @@ The project demonstrates basic CRUD operations, frontend-to-backend communicatio
 - Edit tasks
 - Delete tasks
 - Persist tasks locally in a JSON file
-- OpenTelemetry tracing for the frontend and backend
+- OpenTelemetry tracing for frontend and backend
 - Distributed trace propagation between browser and backend
 - Trace visualization with Jaeger
+- Docker Compose setup for Jaeger
 
 ---
 
@@ -45,6 +46,7 @@ The project demonstrates basic CRUD operations, frontend-to-backend communicatio
 - OTLP over HTTP
 - Jaeger
 - Docker
+- Docker Compose
 
 ---
 
@@ -75,7 +77,7 @@ task-manager-frontend
         |
         | OTLP/HTTP
         v
-     Jaeger
+      Jaeger
         ^
         | OTLP/HTTP
         |
@@ -96,6 +98,11 @@ task-manager/
 │
 ├── README.md
 ├── .gitignore
+├── docker-compose.yml
+│
+├── docs/
+│   └── images/
+│       └── jaeger-trace.png
 │
 ├── backend/
 │   ├── server.js
@@ -113,7 +120,7 @@ task-manager/
     │   ├── main.jsx
     │   └── otel.js
     │
-    ├── .env
+    ├── .env.example
     ├── package.json
     ├── package-lock.json
     └── index.html
@@ -243,6 +250,18 @@ Install dependencies:
 npm install
 ```
 
+Create the local environment file from the example:
+
+```bash
+copy .env.example .env
+```
+
+On macOS or Linux:
+
+```bash
+cp .env.example .env
+```
+
 Start the frontend:
 
 ```bash
@@ -319,19 +338,29 @@ Variables beginning with `VITE_` are exposed to the browser.
 
 Never store passwords, API keys, authentication tokens, or other secrets in `VITE_` environment variables.
 
----
+The real local `.env` file is ignored by Git.
 
-# Jaeger
+The repository contains:
 
-Jaeger is used to collect and visualize traces.
-
-Start Jaeger using Docker:
-
-```bash
-docker run --rm --name jaeger -p 16686:16686 -p 4317:4317 -p 4318:4318 jaegertracing/all-in-one:latest --collector.otlp.http.cors.allowed-origins=http://localhost:5173 --collector.otlp.http.cors.allowed-headers=Content-Type
+```text
+frontend/.env.example
 ```
 
-The relevant ports are:
+as a template.
+
+---
+
+# Start Jaeger with Docker Compose
+
+Jaeger can be started using Docker Compose.
+
+From the project root, run:
+
+```bash
+docker compose up
+```
+
+This starts Jaeger with the following ports:
 
 | Port    | Purpose        |
 | ------- | -------------- |
@@ -339,18 +368,37 @@ The relevant ports are:
 | `4317`  | OTLP over gRPC |
 | `4318`  | OTLP over HTTP |
 
-Open the Jaeger UI:
+The Jaeger Web UI is available at:
 
 ```text
 http://localhost:16686
 ```
 
-You should see two services:
+The Docker Compose configuration also enables CORS for the frontend running at:
 
 ```text
-task-manager-frontend
-task-manager-backend
+http://localhost:5173
 ```
+
+To stop Jaeger, press:
+
+```text
+Ctrl + C
+```
+
+or run:
+
+```bash
+docker compose down
+```
+
+---
+
+# Jaeger Trace Example
+
+The following screenshot shows a distributed trace across the frontend and backend services:
+
+![Jaeger Distributed Trace](docs/images/jaeger-trace.png)
 
 ---
 
@@ -437,8 +485,10 @@ Three processes are required.
 
 ## Terminal 1 — Jaeger
 
+From the project root:
+
 ```bash
-docker run --rm --name jaeger -p 16686:16686 -p 4317:4317 -p 4318:4318 jaegertracing/all-in-one:latest --collector.otlp.http.cors.allowed-origins=http://localhost:5173 --collector.otlp.http.cors.allowed-headers=Content-Type
+docker compose up
 ```
 
 ## Terminal 2 — Backend
@@ -524,6 +574,7 @@ It demonstrates concepts including:
 - OTLP
 - Jaeger
 - Docker
+- Docker Compose
 
 ---
 
