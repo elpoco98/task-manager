@@ -1,10 +1,5 @@
 [
   {
-    "id": 1791133742619,
-    "title": "Studying - 123",
-    "completed": true
-  },
-  {
     "id": 1791133746105,
     "title": "Showering",
     "completed": false
@@ -12,6 +7,21 @@
   {
     "id": 1791133824443,
     "title": "Hello world",
+    "completed": false
+  },
+  {
+    "id": 1791136492873,
+    "title": "OTEL_TEST_2",
+    "completed": true
+  },
+  {
+    "id": 1791136827485,
+    "title": "OTEL_TEST_3",
+    "completed": false
+  },
+  {
+    "id": 1791136894974,
+    "title": "Distributed Trace testen",
     "completed": false
   }
 ]
